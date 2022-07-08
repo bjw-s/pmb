@@ -19,16 +19,13 @@ docker run -e PMB__SOURCE=/tmp/source -e PMB__DESTINATION=/tmp/destination ghcr.
 | PMB__SOURCE | Source directory to backup. | `**None**` |
 | PMB__DESTINATION | Destination directory to save the backup to. | `**None**` |
 | PMB__KEEP_DAYS | Number of daily backups to keep before removal. | `7` |
-| PMB__KEEP_WEEKS | Number of weekly backups to keep before removal. | `1` |
-| PMB__KEEP_MONTHS | Number of monthly backups to keep before removal. | `0` |
-| PMB__KEEP_MINS | Number of minutes for `last` folder backups to keep before removal. | `1440` |
-| PMB__HEALTHCHECK_PORT | Port listening for cron-schedule health check. | `18080` |
-| PMB__SCHEDULE | [Cron-schedule](http://godoc.org/github.com/robfig/cron#hdr-Predefined_schedules) specifying the interval between backups. | `@daily` |
+| PMB__CRON_HEALTHCHECK_PORT | Port listening for cron-schedule health check. | `18080` |
+| PMB__CRON_SCHEDULE | [Cron-schedule](http://godoc.org/github.com/robfig/cron#hdr-Predefined_schedules) specifying the interval between backups. If set to empty the backup command will run just once. | `@daily` |
 | TZ | [POSIX TZ variable](https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html) specifying the timezone used to evaluate SCHEDULE cron (example "Europe/Paris"). | `""` |
 
 ### Automatic Periodic Backups
 
-You can change the `PMB__SCHEDULE` environment variable in `-e PMB__SCHEDULE="@daily"` to alter the default frequency. Default is `daily`.
+You can change the `PMB__CRON_SCHEDULE` environment variable in `-e PMB__CRON_SCHEDULE="@daily"` to alter the default frequency. Default is `daily`.
 
 More information about the scheduling can be found [here](http://godoc.org/github.com/robfig/cron#hdr-Predefined_schedules).
 

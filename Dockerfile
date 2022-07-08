@@ -5,14 +5,16 @@ ARG BUILDPLATFORM
 ARG GOCRON_VERSION="v0.0.10"
 
 ENV \
-  PMB__SCHEDULE="@daily" \
-  PMB__HEALTHCHECK_PORT=18080 \
+  PMB__CRON_SCHEDULE="@daily" \
+  PMB__CRON_HEALTHCHECK_PORT=18080 \
   PMB__SOURCE="**None**" \
   PMB__DESTINATION="**None**"\
   PMB__KEEP_DAYS=7 \
   PMB__KEEP_WEEKS=1 \
   PMB__KEEP_MONTHS=0 \
   PMB__KEEP_MINS=1440
+
+WORKDIR /app
 
 USER root
 
@@ -22,6 +24,7 @@ RUN \
         bash \
         ca-certificates \
         curl \
+        rclone \
         tzdata \
     && \
     case "${TARGETPLATFORM}" in \
@@ -30,10 +33,11 @@ RUN \
     esac \
     && curl -L https://github.com/prodrigestivill/go-cron/releases/download/${GOCRON_VERSION}/go-cron-linux-${ARCH}-static.gz | zcat > /usr/local/bin/go-cron \
     && chmod +x /usr/local/bin/go-cron \
-    && rm -rf \
-        /tmp/* \
     && addgroup -S pmb --gid 1002 \
     && adduser -S pmb -G pmb --uid 1002 \
+    && mkdir -p /config \
+    && chown -R pmb:pmb /config \
+    && chmod -R 775 /config \
     && rm -rf /tmp/*
 
 COPY ./script/backup.sh /app/backup.sh
@@ -45,4 +49,4 @@ USER pmb
 ENTRYPOINT [ "/entrypoint.sh" ]
 
 HEALTHCHECK --interval=5m --timeout=3s \
-  CMD curl -f "http://localhost:$PMB__HEALTHCHECK_PORT/" || exit 1
+  CMD curl -f "http://localhost:$PMB__CRON_HEALTHCHECK_PORT/" || exit 1
