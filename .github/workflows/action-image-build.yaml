@@ -12,7 +12,7 @@ on:
       version:
         description: Version of the image to build
         required: false
-        default: "${{ github.ref }}"
+        default: "rolling"
         type: string
 
 jobs:
@@ -59,7 +59,6 @@ jobs:
           install: true
           version: latest
           driver-opts: image=moby/buildkit:latest
-          # buildkitd-flags: --debug
 
       - name: Setup GHCR
         if: ${{ inputs.pushImages == 'true' }}

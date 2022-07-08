@@ -1,5 +1,5 @@
 ---
-name: "Image: Rebuild"
+name: "Release on new GitHub release"
 
 on:
   release:
