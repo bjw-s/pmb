@@ -9,7 +9,7 @@ Supports the following Docker architectures: `linux/amd64`, `linux/arm64`.
 Docker:
 
 ```sh
-docker run -e PMB__SOURCE=/tmp/source -e PMB__DESTINATION=/tmp/destination bjw-s/pmb
+docker run -e PMB__SOURCE=/tmp/source -e PMB__DESTINATION=/tmp/destination ghcr.io/bjw-s/pmb:rolling
 ```
 
 ### Environment Variables
