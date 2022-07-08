@@ -1,0 +1,114 @@
+---
+name: "Action: Image Build"
+
+on:
+  workflow_call:
+    inputs:
+      pushImages:
+        required: false
+        default: 'false'
+        type: string
+      version:
+        required: false
+        default: "${{ github.ref }}"
+        type: string
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Setup workflow Variables
+        id: vars
+        shell: bash
+        run: |-
+          echo "::set-output name=title::"
+          echo "::set-output name=build_date::$(date --rfc-3339=seconds --utc)"
+
+          version="${{ inputs.version }}"
+          echo "::set-output name=version::${version}"
+
+          echo "::set-output name=tag_testing::pmb:testingz"
+          echo "::set-output name=tag_rolling::pmb:rolling"
+          echo "::set-output name=tag_version::pmb:${version}"
+
+      - name: Setup cli tools
+        shell: bash
+        run: sudo apt-get install moreutils jo
+
+      - name: Setup Goss
+        uses: e1himself/goss-installation-action@v1.0.4
+        with:
+          # renovate: datasource=github-releases depName=aelsabbahy/goss
+          version: v0.3.18
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          install: true
+          version: latest
+          driver-opts: image=moby/buildkit:latest
+          # buildkitd-flags: --debug
+
+      - name: Setup GHCR
+        if: ${{ inputs.pushImages == 'true' }}
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build container image for testing
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64 # load does not support muti-arch https://github.com/docker/buildx/issues/290
+          file: ./Dockerfile
+          load: true
+          tags: |-
+            ghcr.io/${{ github.repository_owner }}/${{ steps.vars.outputs.tag_testing }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run Goss tests
+        id: dgoss
+        shell: bash
+        env:
+          CONTAINER_RUNTIME: docker
+          GOSS_FILE: ./ci/goss.yaml
+          GOSS_OPTS: |-
+            --retry-timeout 60s --sleep 2s --color --format documentation
+        run: >
+          dgoss run ghcr.io/${{ github.repository_owner }}/${{ steps.vars.outputs.tag_testing }} tail -f /dev/null
+
+      - name: Build all platforms
+        id: release
+        uses: docker/build-push-action@v3
+        with:
+          labels: |-
+            org.opencontainers.image.created="${{ steps.vars.outputs.build_date }}"
+            org.opencontainers.image.title="PMB (Poor Man's Backup)"
+            org.opencontainers.image.version="${{ steps.vars.outputs.version }}"
+            org.opencontainers.image.authors="Bernd Schorgers <me@bjw-s.dev>"
+            org.opencontainers.image.url="https://github.com/${{github.repository}}"
+            org.opencontainers.image.documentation="https://github.com/${{github.repository}}/README.md"
+            org.opencontainers.image.revision="${{ github.sha }}"
+
+          context: .
+          platforms: linux/amd64,linux/arm64
+          file: ./Dockerfile
+          push: ${{ inputs.pushImages == 'true' }}
+          tags: |-
+            ghcr.io/${{ github.repository_owner }}/${{ steps.vars.outputs.tag_rolling }}
+            ghcr.io/${{ github.repository_owner }}/${{ steps.vars.outputs.tag_version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

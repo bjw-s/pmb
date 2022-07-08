@@ -1,0 +1,18 @@
+---
+name: "Pull Request: Validate"
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.head_ref }}-pr-validate
+  cancel-in-progress: true
+
+jobs:
+  images-build:
+    uses: bjw-s/pmb/.github/workflows/action-image-build.yaml@main
+    with:
+      pushImages: "false"
+    secrets: inherit

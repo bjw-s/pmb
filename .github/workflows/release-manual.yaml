@@ -1,0 +1,22 @@
+---
+name: "Release: Manual"
+
+on:
+  workflow_dispatch:
+    inputs:
+      push:
+        description: "Push"
+        default: "false"
+        required: true
+      version:
+        description: "Version number"
+        default: "dev"
+        required: true
+
+jobs:
+  images-build:
+    uses: bjw-s/pmg/.github/workflows/action-image-build.yaml@main
+    with:
+      pushImages: "${{ github.event.inputs.push }}"
+      version: "${{ github.event.inputs.version }}"
+    secrets: inherit

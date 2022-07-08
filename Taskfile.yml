@@ -1,0 +1,46 @@
+---
+version: "3"
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task -l
+
+  build:
+    desc: |-
+      task build
+    cmds:
+      - >-
+        docker buildx build --progress=plain --load
+        -t pmb:development
+        -f ./Dockerfile .
+
+  test:
+    desc: |-
+      task test
+    cmds:
+      - task: download-goss
+      - task: build
+      - >-
+        ./.goss/dgoss run pmb:development
+    env:
+      CONTAINER_RUNTIME: docker
+      GOSS_PATH: ./.goss/goss
+      GOSS_OPTS: --retry-timeout 15s --sleep 2s --color --format documentation
+      GOSS_FILE: ./ci/goss.yaml
+
+  download-goss:
+    silent: true
+    vars:
+      # renovate: datasource=github-releases depName=aelsabbahy/goss
+      GOSS_VERSION: v0.3.18
+    cmds:
+      - mkdir -p ./.goss
+      - curl -fsSL -o ./.goss/goss https://github.com/aelsabbahy/goss/releases/download/{{.GOSS_VERSION}}/goss-linux-amd64
+      - chmod +x ./.goss/goss
+      - curl -fsSL -o ./.goss/dgoss https://raw.githubusercontent.com/aelsabbahy/goss/{{.GOSS_VERSION}}/extras/dgoss/dgoss
+      - chmod +x ./.goss/dgoss
+    status:
+      - test -f ./.goss/goss
+      - test -f ./.goss/dgoss

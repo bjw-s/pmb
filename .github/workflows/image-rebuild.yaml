@@ -1,0 +1,16 @@
+---
+name: "Image: Rebuild"
+
+on:
+  release:
+    types: [published]
+    paths-ignore:
+      - README.md
+
+jobs:
+  images-build:
+    uses: bjw-s/pmb/.github/workflows/action-image-build.yaml@main
+    with:
+      pushImages: "true"
+      version: "${{ github.event.release.tag_name }}"
+    secrets: inherit
