@@ -16,22 +16,15 @@ if [ "${PMB__DESTINATION}" = "**None**" ]; then
   exit 1
 fi
 
-RCLONE_CONFIG="/config/rclone.conf"
-if [[ ! -f "${RCLONE_CONFIG}" ]]; then
-  touch "${RCLONE_CONFIG}"
-fi
-
-KEEP_MINS=${PMB__KEEP_MINS}
-KEEP_DAYS=${PMB__KEEP_DAYS}
+KEEP_DAYS=$((PMB__KEEP_DAYS + 1))
 
 #Initialize filename vers
 FILE="$(date "+%Y-%m-%d_%H_%M_%S").tar.gz"
 
 #Create backup
 log "INFO" "Backing up ${PMB__SOURCE} contents to ${FILE}"
-cd "${PMB__SOURCE}"
-tar -zcf . | rclone rcat "${PMB__DESTINATION}/${FILE}" --config "${RCLONE_CONFIG}"
+tar -zcf - -C "${PMB__SOURCE}" . | rclone rcat "remote:/${FILE}" --config "${RCLONE_CONFIG}"
 
 #Clean old files
 log "INFO" "Cleaning older files from ${PMB__DESTINATION}..."
-find ${PMB__DESTINATION} -maxdepth 1 -type f -name "*.tar.gz" -mtime "+${KEEP_DAYS}" -delete
+rclone delete remote:/ --min-age "${KEEP_DAYS}d" -v --config "${RCLONE_CONFIG}"

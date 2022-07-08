@@ -12,7 +12,8 @@ ENV \
   PMB__KEEP_DAYS=7 \
   PMB__KEEP_WEEKS=1 \
   PMB__KEEP_MONTHS=0 \
-  PMB__KEEP_MINS=1440
+  PMB__KEEP_MINS=1440 \
+  RCLONE_CONFIG="/app/rclone.conf"
 
 WORKDIR /app
 
@@ -24,6 +25,7 @@ RUN \
         bash \
         ca-certificates \
         curl \
+        nano \
         rclone \
         tzdata \
     && \
@@ -35,9 +37,9 @@ RUN \
     && chmod +x /usr/local/bin/go-cron \
     && addgroup -S pmb --gid 1002 \
     && adduser -S pmb -G pmb --uid 1002 \
-    && mkdir -p /config \
-    && chown -R pmb:pmb /config \
-    && chmod -R 775 /config \
+    && mkdir -p /app \
+    && chown -R pmb:pmb /app \
+    && chmod -R 775 /app \
     && rm -rf /tmp/*
 
 COPY ./script/backup.sh /app/backup.sh

@@ -10,6 +10,14 @@ printf "%-13s%s\n" "DESTINATION:~" "~$PMB__DESTINATION" | tr ' ~' '  '
 printf "%-13s%s\n" "SCHEDULE:~" "~$PMB__CRON_SCHEDULE" | tr ' ~' '  '
 printf "\n"
 
+if [[ ! -f "${RCLONE_CONFIG}" ]]; then
+cat <<EOF > "${RCLONE_CONFIG}"
+[remote]
+type = alias
+remote = ${PMB__DESTINATION}
+EOF
+fi
+
 if [[ -z "${PMB__CRON_SCHEDULE}" ]]; then
   exec /app/backup.sh
 else
