@@ -5,10 +5,12 @@ on:
   workflow_call:
     inputs:
       pushImages:
+        description: Should the image be pushed to the registry?
         required: false
-        default: 'false'
+        default: "false"
         type: string
       version:
+        description: Version of the image to build
         required: false
         default: "${{ github.ref }}"
         type: string

@@ -16,7 +16,7 @@ ENV \
 
 USER root
 
-#hadolint ignore=DL3018
+#hadolint ignore=DL3018,DL4006
 RUN \
     apk add --no-cache \
         bash \
@@ -31,19 +31,15 @@ RUN \
     && curl -L https://github.com/prodrigestivill/go-cron/releases/download/${GOCRON_VERSION}/go-cron-linux-${ARCH}-static.gz | zcat > /usr/local/bin/go-cron \
     && chmod +x /usr/local/bin/go-cron \
     && rm -rf \
-        /tmp/*
-
-#hadolint ignore=DL3018
-RUN \
-    addgroup -S pmb --gid 1002 \
-        && adduser -S pmb -G pmb --uid 1002 \
+        /tmp/* \
+    && addgroup -S pmb --gid 1002 \
+    && adduser -S pmb -G pmb --uid 1002 \
     && rm -rf /tmp/*
 
 COPY ./script/backup.sh /app/backup.sh
 COPY ./entrypoint.sh /entrypoint.sh
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
 USER pmb
 
 ENTRYPOINT [ "/entrypoint.sh" ]
