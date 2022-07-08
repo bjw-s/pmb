@@ -4,8 +4,6 @@ name: "Image: Rebuild"
 on:
   release:
     types: [published]
-    paths-ignore:
-      - README.md
 
 jobs:
   images-build:

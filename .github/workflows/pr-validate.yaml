@@ -15,4 +15,5 @@ jobs:
     uses: bjw-s/pmb/.github/workflows/action-image-build.yaml@main
     with:
       pushImages: "false"
+      version: "${{ github.sha }}"
     secrets: inherit
