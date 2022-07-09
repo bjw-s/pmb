@@ -3,3 +3,6 @@
 file:
   /usr/local/bin/go-cron:
     exists: true
+
+  /app/backup.sh:
+    exists: true

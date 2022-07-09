@@ -89,7 +89,7 @@ jobs:
           GOSS_OPTS: |-
             --retry-timeout 60s --sleep 2s --color --format documentation
         run: >
-          dgoss run ghcr.io/${{ github.repository_owner }}/${{ steps.vars.outputs.tag_testing }} tail -f /dev/null
+          dgoss run --entrypoint tail ghcr.io/${{ github.repository_owner }}/${{ steps.vars.outputs.tag_testing }} -f /dev/null
 
       - name: Build all platforms
         id: release

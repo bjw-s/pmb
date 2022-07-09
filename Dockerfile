@@ -13,8 +13,7 @@ ENV \
   PMB__RCLONE_REMOTE="local_dir" \
   PMB__RCLONE_REMOTE_PATH="/" \
   PMB__RCLONE_CONFIG="/app/rclone.conf" \
-  PMB__KEEP_DAYS=7 \
-  PMB__KEEP_MINS=1440
+  PMB__KEEP_DAYS=7
 
 WORKDIR /app
 

@@ -23,7 +23,7 @@ tasks:
       - task: download-goss
       - task: build
       - >-
-        ./.goss/dgoss run pmb:development
+        ./.goss/dgoss run --entrypoint tail pmb:development -f /dev/null
     env:
       CONTAINER_RUNTIME: docker
       GOSS_PATH: ./.goss/goss
