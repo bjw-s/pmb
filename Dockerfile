@@ -39,7 +39,7 @@ RUN \
     && adduser -S pmb -G pmb --uid 1002 \
     && mkdir -p /app \
     && chown -R pmb:pmb /app \
-    && chmod -R 775 /app \
+    && chmod -R 777 /app \
     && rm -rf /tmp/*
 
 COPY ./script/backup.sh /app/backup.sh
