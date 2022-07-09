@@ -5,15 +5,16 @@ ARG BUILDPLATFORM
 ARG GOCRON_VERSION="v0.0.10"
 
 ENV \
+  PMB__MODE="standalone" \
   PMB__CRON_SCHEDULE="@daily" \
   PMB__CRON_HEALTHCHECK_PORT=18080 \
-  PMB__SOURCE="**None**" \
-  PMB__DESTINATION="**None**"\
+  PMB__SOURCE_DIR="" \
+  PMB__DESTINATION_DIR=""\
+  PMB__RCLONE_REMOTE="local_dir" \
+  PMB__RCLONE_REMOTE_PATH="/" \
+  PMB__RCLONE_CONFIG="/app/rclone.conf" \
   PMB__KEEP_DAYS=7 \
-  PMB__KEEP_WEEKS=1 \
-  PMB__KEEP_MONTHS=0 \
-  PMB__KEEP_MINS=1440 \
-  RCLONE_CONFIG="/app/rclone.conf"
+  PMB__KEEP_MINS=1440
 
 WORKDIR /app
 
@@ -25,7 +26,7 @@ RUN \
         bash \
         ca-certificates \
         curl \
-        nano \
+        jq \
         rclone \
         tzdata \
     && \
