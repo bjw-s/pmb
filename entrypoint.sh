@@ -10,6 +10,7 @@ printf "%-17s%s\n" "SOURCE DIR:~" "~$PMB__SOURCE_DIR" | tr ' ~' '  '
 printf "%-17s%s\n" "DESTINATION DIR:~" "~$PMB__DESTINATION_DIR" | tr ' ~' '  '
 printf "%-17s%s\n" "RCLONE REMOTE:~" "~$PMB__RCLONE_REMOTE" | tr ' ~' '  '
 printf "%-17s%s\n" "SCHEDULE:~" "~$PMB__CRON_SCHEDULE" | tr ' ~' '  '
+printf "%-17s%s\n" "RETENTION:~" "~$PMB__KEEP_DAYS days" | tr ' ~' '  '
 printf "\n"
 
 if [[ -z "${PMB__SOURCE_DIR}" ]]; then
@@ -22,17 +23,18 @@ if [[ ! -d "${PMB__SOURCE_DIR}" ]]; then
   exit 1
 fi
 
-if [[ ! -z "${PMB__DESTINATION_DIR}" ]] && [[ ! -d "${PMB__DESTINATION_DIR}" ]]; then
+if [[ -n "${PMB__DESTINATION_DIR}" ]] && [[ ! -d "${PMB__DESTINATION_DIR}" ]]; then
   echo "ERROR No such destination directory: ${PMB__DESTINATION_DIR}"
   exit 1
 fi
 
-if [[ ! -z "${PMB__DESTINATION_DIR}" ]] && [[ -d "${PMB__DESTINATION_DIR}" ]]; then
-cat <<EOF > "${PMB__RCLONE_CONFIG}"
-[${PMB__RCLONE_REMOTE}]
-type = alias
-remote = ${PMB__DESTINATION_DIR}
-EOF
+if [[ "${PMB__FSFREEZE}" == "true" ]] && [[ "${EUID}" != "0" ]]; then
+  echo "ERROR fsfreeze requires the container to be running as root."
+  exit 1
+fi
+
+if [[ -n "${PMB__DESTINATION_DIR}" ]]; then
+  rclone config create local_dir alias remote="${PMB__DESTINATION_DIR}" --config "${PMB__RCLONE_CONFIG}"
 fi
 
 if [[ "${PMB__MODE}" == "standalone" ]]; then

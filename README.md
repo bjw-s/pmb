@@ -27,10 +27,11 @@ Poor Man's Backup can be used in Kubernetes as well. Examples will follow soon.
 | PMB__MODE | Mode to run in. Can be either `standalone` or `cron`. | `standalone` |
 | PMB__SOURCE_DIR | Source directory to backup. | `""` |
 | PMB__DESTINATION_DIR | Destination directory to save the backup to. **When this is set, `PMB__RCLONE_REMOTE` will be ignored!** | `""` |
+| PMB__KEEP_DAYS | Number of daily backups to keep before removal. | `7` |
+| PMB__FSFREEZE | Run [`fsfreeze`](https://linux.die.net/man/8/fsfreeze) command on the `PMB__SOURCE_DIR` before performing a backup. **This only works when the container is running privileged and as `root`**. | `false` |
 | PMB__RCLONE_REMOTE | The rclone remote to back up to. | `local_dir` |
 | PMB__RCLONE_REMOTE_PATH | The path on the rclone remote to back up to. | `/` |
 | PMB__RCLONE_CONFIG | The location where the rclone configuration file can be found. | `/app/rclone.conf` |
-| PMB__KEEP_DAYS | Number of daily backups to keep before removal. | `7` |
 | PMB__CRON_HEALTHCHECK_PORT | Port listening for cron-schedule health check. | `18080` |
 | PMB__CRON_SCHEDULE | [Cron-schedule](http://godoc.org/github.com/robfig/cron#hdr-Predefined_schedules) specifying the interval between backups. If set to empty the backup command will run just once. | `@daily` |
 | TZ | [POSIX TZ variable](https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html) specifying the timezone used to evaluate SCHEDULE cron (example "Europe/Paris"). | `""` |

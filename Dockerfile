@@ -10,10 +10,11 @@ ENV \
   PMB__CRON_HEALTHCHECK_PORT=18080 \
   PMB__SOURCE_DIR="" \
   PMB__DESTINATION_DIR=""\
+  PMB__KEEP_DAYS=7 \
   PMB__RCLONE_REMOTE="local_dir" \
   PMB__RCLONE_REMOTE_PATH="/" \
   PMB__RCLONE_CONFIG="/app/rclone.conf" \
-  PMB__KEEP_DAYS=7
+  PMB__FSFREEZE="false"
 
 WORKDIR /app
 
@@ -28,6 +29,7 @@ RUN \
         jq \
         rclone \
         tzdata \
+        util-linux \
     && \
     case "${TARGETPLATFORM}" in \
         'linux/amd64') export ARCH='amd64' ;; \
@@ -35,10 +37,7 @@ RUN \
     esac \
     && curl -L https://github.com/prodrigestivill/go-cron/releases/download/${GOCRON_VERSION}/go-cron-linux-${ARCH}-static.gz | zcat > /usr/local/bin/go-cron \
     && chmod +x /usr/local/bin/go-cron \
-    && addgroup -S pmb --gid 1002 \
-    && adduser -S pmb -G pmb --uid 1002 \
     && mkdir -p /app \
-    && chown -R pmb:pmb /app \
     && chmod -R 777 /app \
     && rm -rf /tmp/*
 
@@ -46,7 +45,6 @@ COPY ./script/backup.sh /app/backup.sh
 COPY ./entrypoint.sh /entrypoint.sh
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-USER pmb
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 

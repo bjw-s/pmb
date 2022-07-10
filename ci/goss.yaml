@@ -4,5 +4,8 @@ file:
   /usr/local/bin/go-cron:
     exists: true
 
+  /sbin/fsfreeze:
+    exists: true
+
   /app/backup.sh:
     exists: true
