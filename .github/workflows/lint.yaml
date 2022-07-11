@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: MegaLinter
-        uses: megalinter/megalinter@v5
+        uses: megalinter/megalinter@v6
         env:
           PRINT_ALPACA: false
           VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'workflow_dispatch' }}
