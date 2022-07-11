@@ -10,7 +10,11 @@ if [[ "${PMB__FSFREEZE}" == "true" ]]; then
   fsfreeze --freeze "${PMB__SOURCE_DIR}"
 fi
 
-tar --exclude="./lost+found" -zcf - -C "${PMB__SOURCE_DIR}" . | rclone rcat "${PMB__RCLONE_REMOTE}:${PMB__RCLONE_REMOTE_PATH}${FILE}" --config "${PMB__RCLONE_CONFIG}"
+excludeArgs=()
+for pattern in ${PMB__EXCLUDE_PATTERNS}; do
+  excludeArgs+=("--exclude=${pattern}")
+done
+tar "${excludeArgs[@]}" -zcf - -C "${PMB__SOURCE_DIR}" . | rclone rcat "${PMB__RCLONE_REMOTE}:${PMB__RCLONE_REMOTE_PATH}${FILE}" --config "${PMB__RCLONE_CONFIG}"
 
 if [[ "${PMB__FSFREEZE}" == "true" ]]; then
   # TODO: This needs to _always_ run if "${PMB__FSFREEZE}" == "true", perhaps use `trap`?

@@ -4,13 +4,14 @@
 test -f "/scripts/umask.sh" && source "/scripts/umask.sh"
 
 printf "Poor Man's Backup\n"
-printf "%-17s\n" " " | tr ' ~' '- '
-printf "%-17s%s\n" "MODE:~" "~$PMB__MODE" | tr ' ~' '  '
-printf "%-17s%s\n" "SOURCE DIR:~" "~$PMB__SOURCE_DIR" | tr ' ~' '  '
-printf "%-17s%s\n" "DESTINATION DIR:~" "~$PMB__DESTINATION_DIR" | tr ' ~' '  '
-printf "%-17s%s\n" "RCLONE REMOTE:~" "~$PMB__RCLONE_REMOTE" | tr ' ~' '  '
-printf "%-17s%s\n" "SCHEDULE:~" "~$PMB__CRON_SCHEDULE" | tr ' ~' '  '
-printf "%-17s%s\n" "RETENTION:~" "~$PMB__KEEP_DAYS days" | tr ' ~' '  '
+printf "%-18s\n" " " | tr ' ~' '- '
+printf "%-18s%s\n" "MODE:~" "~$PMB__MODE" | tr ' ~' '  '
+printf "%-18s%s\n" "SOURCE DIR:~" "~$PMB__SOURCE_DIR" | tr ' ~' '  '
+printf "%-18s%s\n" "DESTINATION DIR:~" "~$PMB__DESTINATION_DIR" | tr ' ~' '  '
+printf "%-18s%s\n" "RCLONE REMOTE:~" "~$PMB__RCLONE_REMOTE" | tr ' ~' '  '
+printf "%-18s%s\n" "SCHEDULE:~" "~$PMB__CRON_SCHEDULE" | tr ' ~' '  '
+printf "%-18s%s\n" "RETENTION:~" "~$PMB__KEEP_DAYS days" | tr ' ~' '  '
+printf "%-18s%s\n" "EXCLUDE PATTERNS:~" "~$PMB__EXCLUDE_PATTERNS" | tr ' ~' '  '
 printf "\n"
 
 if [[ -z "${PMB__SOURCE_DIR}" ]]; then
