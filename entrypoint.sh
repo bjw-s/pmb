@@ -12,6 +12,7 @@ printf "%-18s%s\n" "RCLONE REMOTE:~" "~$PMB__RCLONE_REMOTE" | tr ' ~' '  '
 printf "%-18s%s\n" "SCHEDULE:~" "~$PMB__CRON_SCHEDULE" | tr ' ~' '  '
 printf "%-18s%s\n" "RETENTION:~" "~$PMB__KEEP_DAYS days" | tr ' ~' '  '
 printf "%-18s%s\n" "EXCLUDE PATTERNS:~" "~$PMB__EXCLUDE_PATTERNS" | tr ' ~' '  '
+printf "%-18s%s\n" "FSFREEZE ENABLED:~" "~$PMB__FSFREEZE" | tr ' ~' '  '
 printf "\n"
 
 if [[ -z "${PMB__SOURCE_DIR}" ]]; then

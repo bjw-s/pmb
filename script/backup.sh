@@ -11,8 +11,17 @@ for pattern in ${PMB__EXCLUDE_PATTERNS}; do
   excludeArgs+=("--exclude=${pattern}")
 done
 
+trap 'catch_exit' EXIT
+
+catch_exit() {
+  if [[ "${PMB__FSFREEZE}" == "true" ]]; then
+    echo "INFO Unfreezing ${PMB__SOURCE_DIR}"
+    fsfreeze --unfreeze "${PMB__SOURCE_DIR}"
+  fi
+}
+
 if [[ "${PMB__FSFREEZE}" == "true" ]]; then
-  trap 'fsfreeze --unfreeze ${PMB__SOURCE_DIR}' EXIT
+  echo "INFO Freezing ${PMB__SOURCE_DIR}"
   fsfreeze --freeze "${PMB__SOURCE_DIR}"
 fi
 
