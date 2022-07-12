@@ -19,6 +19,7 @@ ENV \
 
 WORKDIR /app
 
+#hadolint ignore=DL3002
 USER root
 
 #hadolint ignore=DL3018,DL4006
