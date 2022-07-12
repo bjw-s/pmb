@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: MegaLinter
-        uses: megalinter/megalinter@v5
+        uses: oxsecurity/megalinter/flavors/documentation@v6
         env:
           PRINT_ALPACA: false
           VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'workflow_dispatch' }}
@@ -32,12 +32,12 @@ jobs:
                 fromJSON('
                   [
                     "ACTION_ACTIONLINT",
+                    "BASH_SHELLCHECK",
                     "COPYPASTE_JSCPD",
-                    "CREDENTIALS_SECRETLINT",
                     "DOCKERFILE_HADOLINT",
-                    "GIT_GIT_DIFF",
                     "MARKDOWN_MARKDOWNLINT",
-                    "TERRAFORM_TERRAFORM_FMT",
+                    "REPOSITORY_GIT_DIFF",
+                    "REPOSITORY_SECRETLINT",
                     "YAML_PRETTIER",
                     "YAML_YAMLLINT"
                   ]
@@ -47,6 +47,5 @@ jobs:
             }}
           MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .github/linters/markdownlint.config.yaml
           MARKDOWN_MARKDOWNLINT_RULES_PATH: .github/
-          PYTHON_FLAKE8_CONFIG_FILE: .github/linters/.flake8
           YAML_YAMLLINT_CONFIG_FILE: .github/linters/.yamllint.yaml
-          YAML_PRETTIER_FILTER_REGEX_EXCLUDE: "(.*\\.sops\\.ya?ml)"
+          YAML_PRETTIER_CONFIG_FILE: .github/linters/.prettierrc.yaml
