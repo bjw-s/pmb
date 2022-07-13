@@ -1,8 +1,15 @@
+FROM ghcr.io/onedr0p/kubernetes-kubectl:1.24.2 as kubectl
+FROM ghcr.io/fluxcd/flux-cli:v0.31.3 as flux-cli
+FROM docker.io/kopia/kopia:0.11.3 as kopia
+
 FROM alpine:3.16.0@sha256:686d8c9dfa6f3ccfc8230bc3178d23f84eeaf7e457f36f271ab1acc53015037c
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
+ARG TARGETARCH
 ARG GOCRON_VERSION="v0.0.10"
+
+ENV TARGETARCH=${TARGETARCH:-amd64}
 
 ENV \
   PMB__MODE="standalone" \
@@ -46,6 +53,10 @@ RUN \
 
 COPY ./script/backup.sh /app/backup.sh
 COPY ./entrypoint.sh /entrypoint.sh
+
+COPY --from=kopia      /app/kopia                       /usr/local/bin/kopia
+COPY --from=flux-cli   /usr/local/bin/flux              /usr/local/bin/flux
+COPY --from=kubectl    /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
