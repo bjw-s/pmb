@@ -6,5 +6,8 @@ file:
   /sbin/fsfreeze:
     exists: true
 
+  /usr/bin/tar:
+    exists: true
+
   /app/backup.sh:
     exists: true

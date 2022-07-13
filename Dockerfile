@@ -8,14 +8,14 @@ ENV \
   PMB__MODE="standalone" \
   PMB__CRON_SCHEDULE="@daily" \
   PMB__CRON_HEALTHCHECK_PORT=18080 \
-  PMB__SOURCE_DIR="" \
-  PMB__DESTINATION_DIR=""\
+  PMB__SOURCE_DIR="/data/src" \
+  PMB__DESTINATION_DIR="/data/dest"\
   PMB__KEEP_DAYS=7 \
   PMB__EXCLUDE_PATTERNS="./lost+found"\
   PMB__RCLONE_REMOTE="local_dir" \
   PMB__RCLONE_REMOTE_PATH="/" \
   PMB__RCLONE_CONFIG="/app/rclone.conf" \
-  PMB__FSFREEZE="false"
+  PMB__FSFREEZE="true"
 
 WORKDIR /app
 
@@ -30,6 +30,7 @@ RUN \
   curl \
   jq \
   rclone \
+  tar \
   tzdata \
   util-linux \
   && \

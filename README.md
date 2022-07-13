@@ -25,11 +25,11 @@ Poor Man's Backup can be used in Kubernetes as well. Examples will follow soon.
 | Variable | Description | Default value |
 |--|--|--|
 | PMB__MODE | Mode to run in. Can be either `standalone` or `cron`. | `standalone` |
-| PMB__SOURCE_DIR | Source directory to backup. | `""` |
-| PMB__DESTINATION_DIR | Destination directory to save the backup to. **When this is set, `PMB__RCLONE_REMOTE` will be ignored!** | `""` |
+| PMB__SOURCE_DIR | Source directory to backup. | `/data/src` |
+| PMB__DESTINATION_DIR | Destination directory to save the backup to. | `/data/dest` |
 | PMB__KEEP_DAYS | Number of daily backups to keep before removal. | `7` |
 | PMB__EXCLUDE_PATTERNS | A space separated list of patterns that should be excluded from the backup | `./lost+found` |
-| PMB__FSFREEZE | Run [`fsfreeze`](https://linux.die.net/man/8/fsfreeze) command on the `PMB__SOURCE_DIR` before performing a backup. **This only works when the container is running privileged and as `root`**. | `false` |
+| PMB__FSFREEZE | Run [`fsfreeze`](https://linux.die.net/man/8/fsfreeze) command on the `PMB__SOURCE_DIR` before performing a backup. **This only works when the container is running privileged and as `root`**. | `true` |
 | PMB__RCLONE_REMOTE | The rclone remote to back up to. | `local_dir` |
 | PMB__RCLONE_REMOTE_PATH | The path on the rclone remote to back up to. | `/` |
 | PMB__RCLONE_CONFIG | The location where the rclone configuration file can be found. | `/app/rclone.conf` |
