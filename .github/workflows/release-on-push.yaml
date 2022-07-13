@@ -11,24 +11,11 @@ on:
       - "entrypoint.sh"
 
 jobs:
-  get-version:
-    name: Get current version
-    runs-on: ubuntu-22.04
-    outputs:
-      version: ${{ steps.vars.outputs.version }}
-    steps:
-      - name: Setup workflow Variables
-        id: vars
-        shell: bash
-        run: |-
-          version="$(curl -sX GET "https://api.github.com/repos/bjw-s/pmb/releases/latest" | jq --raw-output '.tag_name //"rolling"')"
-          echo "::set-output name=version::${version}"
-
   images-build:
     uses: bjw-s/pmb/.github/workflows/action-image-build.yaml@main
     needs:
       - get-version
     with:
       pushImages: "true"
-      version: "${{ needs.get-version.outputs.version }}"
+      version: "rolling"
     secrets: inherit
