@@ -45,7 +45,8 @@ RUN \
     apk add --no-cache \
         bash \
         ca-certificates \
-        jq
+        jq \
+        util-linux
 
 COPY ./script/backup.sh /app/backup.sh
 COPY ./entrypoint.sh /entrypoint.sh

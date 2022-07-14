@@ -1,13 +1,25 @@
 ---
 file:
-  /usr/local/bin/go-cron:
+  /usr/local/bin/kubectl:
     exists: true
+    mode: "0755"
+
+  /usr/local/bin/kopia:
+    exists: true
+    mode: "0755"
+
+  /usr/local/bin/flux:
+    exists: true
+    mode: "0755"
 
   /sbin/fsfreeze:
     exists: true
-
-  /usr/bin/tar:
-    exists: true
+    mode: "0755"
 
   /app/backup.sh:
     exists: true
+    mode: "0755"
+
+  /app/restore.sh:
+    exists: true
+    mode: "0755"
