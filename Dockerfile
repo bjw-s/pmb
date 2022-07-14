@@ -1,4 +1,4 @@
-FROM ghcr.io/onedr0p/kubernetes-kubectl:1.24.2 as kubectl
+FROM ghcr.io/onedr0p/kubernetes-kubectl:1.24.3@sha256:d68ebf4e48a112978af7f0e56c26e31d10dc271a894fbf5937d5edc69504412c as kubectl
 FROM ghcr.io/fluxcd/flux-cli:v0.31.3 as flux-cli
 FROM docker.io/kopia/kopia:0.11.3 as kopia
 
