@@ -25,6 +25,7 @@ ENV \
   PMB__CONTROLLER_NAME="" \
   PMB__SNAPSHOT_ID="latest"
 
+# Kopia Env
 ENV \
   KOPIA_CONFIG_PATH="/kopia/repository.config" \
   KOPIA_PERSIST_CREDENTIALS_ON_CONNECT="false" \
@@ -43,13 +44,13 @@ RUN \
   jq \
   util-linux
 
-COPY ./script/backup.sh /app/backup.sh
+COPY ./script/backup.sh  /app/backup.sh
 COPY ./script/restore.sh /app/restore.sh
-COPY ./entrypoint.sh /entrypoint.sh
+COPY ./entrypoint.sh     /entrypoint.sh
 
-COPY --from=kopia      /app/kopia                   /usr/local/bin/kopia
-COPY --from=flux-cli   /usr/local/bin/flux          /usr/local/bin/flux
-COPY --from=kubectl    /usr/local/bin/kubectl       /usr/local/bin/kubectl
+COPY --from=kopia      /app/kopia             /usr/local/bin/kopia
+COPY --from=flux-cli   /usr/local/bin/flux    /usr/local/bin/flux
+COPY --from=kubectl    /usr/local/bin/kubectl /usr/local/bin/kubectl
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
