@@ -42,4 +42,9 @@ if [[ "${PMB__ACTION}" == "restore" && -z "${PMB__NAMESPACE}" ]]; then
   exit 1
 fi
 
+if [[ "${PMB__ACTION}" == "restore" && -z "${PMB__CONTROLLER_NAME}" ]]; then
+  echo "ERROR You need to set the PMB__CONTROLLER_NAME environment variable when restoring."
+  exit 1
+fi
+
 exec "/app/${PMB__ACTION}.sh"

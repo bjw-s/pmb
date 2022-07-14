@@ -11,11 +11,13 @@ if [[ -n "${PMB__HELMRELEASE}" ]]; then
   flux -n "${PMB__NAMESPACE}" suspend helmrelease "${PMB__HELMRELEASE}"
 fi
 
-kubectl -n "${PMB__NAMESPACE}" scale "${PMB__CONTROLLER}" "${PMB__HELMRELEASE}" --replicas 0
+echo "INFO Scaling ${PMB__CONTROLLER} ${PMB__NAMESPACE}/${PMB__CONTROLLER_NAME} to 0 replicas."
+ORIGINAL_REPLICAS=$(kubectl -n "${PMB__NAMESPACE}" get "${PMB__CONTROLLER}" "${PMB__CONTROLLER_NAME}" -o=jsonpath='{.status.replicas}')
+kubectl -n "${PMB__NAMESPACE}" scale "${PMB__CONTROLLER}" "${PMB__CONTROLLER_NAME}" --replicas 0
 
 kopia repository connect filesystem --path="${PMB__DEST_DIR}/repo" --override-hostname=cluster --override-username=cronjob
 
-rm -rf /mnt/config/{*,.*}
+rm -rf "${PMB__SRC_DIR:?}"/{*,.*}
 
 if [[ "${PMB_SNAPSHOT_ID}" == "latest" ]]; then
     latest_snapshot_id=$(kopia snapshot list --json | jq --raw-output '.[0] | .id')
@@ -26,6 +28,9 @@ fi
 kopia snapshot restore "${latest_snapshot_id}" "${PMB__SRC_DIR}"
 
 kopia repository disconnect
+
+echo "INFO Scaling ${PMB__CONTROLLER} ${PMB__NAMESPACE}/${PMB__CONTROLLER_NAME} to ${ORIGINAL_REPLICAS} replicas."
+kubectl -n "${PMB__NAMESPACE}" scale "${PMB__CONTROLLER}" "${PMB__CONTROLLER_NAME}" --replicas "${ORIGINAL_REPLICAS}"
 
 if [[ -n "${PMB__HELMRELEASE}" ]]; then
   echo "INFO Resuming Flux HelmRelease ${PMB__NAMESPACE}/${PMB__HELMRELEASE}."

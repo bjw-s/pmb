@@ -22,6 +22,7 @@ ENV \
   PMB__HELMRELEASE="" \
   PMB__NAMESPACE="" \
   PMB__CONTROLLER="deployment" \
+  PMB__CONTROLLER_NAME="" \
   PMB__SNAPSHOT_ID="latest"
 
 ENV \
