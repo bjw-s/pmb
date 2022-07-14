@@ -13,17 +13,14 @@ fi
 
 mkdir -p "${PMB__DEST_DIR}"/{cache,logs,repo}
 
-kopia repository create filesystem --path="${PMB__DEST_DIR}/repo"
+if [[ ! "$(ls -A "${PMB__DEST_DIR}/repo")" ]]; then
+    kopia repository create filesystem --path="${PMB__DEST_DIR}/repo"
+fi
 
 kopia repository connect filesystem --path="${PMB__DEST_DIR}/repo" --override-hostname=cluster --override-username=cronjob
 
 kopia policy set "${PMB__DEST_DIR}/repo" \
-    --keep-latest "${PMB__KEEP_LATEST}" \
-    --keep-hourly "${PMB__KEEP_HOURLY}" \
-    --keep-daily "${PMB__KEEP_DAILY}" \
-    --keep-weekly "${PMB__KEEP_WEEKLY}" \
-    --keep-monthly "${PMB__KEEP_MONTHLY}" \
-    --keep-annual "${PMB__KEEP_ANNUAL}"
+    --keep-latest "${PMB__KEEP_LATEST}"
 
 if [[ "${PMB__COMPRESSION}" == "true" ]]; then
     kopia policy set "${PMB__DEST_DIR}/repo" --compression=zstd

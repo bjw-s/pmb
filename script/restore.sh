@@ -6,7 +6,10 @@ export KOPIA_CACHE_DIRECTORY="${PMB__DEST_DIR}/cache"
 
 echo "INFO Restoring ${PMB__DEST_DIR} contents to ${PMB__SRC_DIR}"
 
-flux -n "${PMB__NAMESPACE}" suspend helmrelease "${PMB__HELMRELEASE}"
+if [[ -n "${PMB__HELMRELEASE}" ]]; then
+  echo "INFO Suspending Flux HelmRelease ${PMB__NAMESPACE}/${PMB__HELMRELEASE}."
+  flux -n "${PMB__NAMESPACE}" suspend helmrelease "${PMB__HELMRELEASE}"
+fi
 
 kubectl -n "${PMB__NAMESPACE}" scale "${PMB__CONTROLLER}" "${PMB__HELMRELEASE}" --replicas 0
 
@@ -24,4 +27,7 @@ kopia snapshot restore "${latest_snapshot_id}" "${PMB__SRC_DIR}"
 
 kopia repository disconnect
 
-flux -n "${PMB__NAMESPACE}" resume helmrelease "${PMB__HELMRELEASE}"
+if [[ -n "${PMB__HELMRELEASE}" ]]; then
+  echo "INFO Resuming Flux HelmRelease ${PMB__NAMESPACE}/${PMB__HELMRELEASE}."
+  flux -n "${PMB__NAMESPACE}" resume helmrelease "${PMB__HELMRELEASE}"
+fi
