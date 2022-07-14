@@ -44,4 +44,11 @@
       versioningTemplate: "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
     },
   ],
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["docker.io/kopia/kopia"],
+      "allowedVersions": "<999"
+    }
+  ]
 }
