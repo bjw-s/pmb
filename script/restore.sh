@@ -22,7 +22,7 @@ rm -rf "${PMB__SRC_DIR:?}/*"
 shopt -u dotglob
 
 if [[ "${PMB_SNAPSHOT_ID}" == "latest" ]]; then
-    latest_snapshot_id=$(kopia snapshot list --json | jq --raw-output '.[0] | .id')
+    latest_snapshot_id=$(kopia snapshot list --json | jq --raw-output '.[-1] | .id')
 else
     latest_snapshot_id=${PMB__SNAPSHOT_ID}
 fi
