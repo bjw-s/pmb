@@ -20,7 +20,12 @@ fi
 kopia repository connect filesystem --path="${PMB__DEST_DIR}/repo" --override-hostname=cluster --override-username=cronjob
 
 kopia policy set "${PMB__DEST_DIR}/repo" \
-    --keep-latest "${PMB__KEEP_LATEST}"
+    --keep-latest "${PMB__KEEP_LATEST}" \
+    --keep-hourly "0" \
+    --keep-daily "0" \
+    --keep-weekly "0" \
+    --keep-monthly "0" \
+    --keep-annual "0"
 
 if [[ "${PMB__COMPRESSION}" == "true" ]]; then
     kopia policy set "${PMB__DEST_DIR}/repo" --compression=zstd
