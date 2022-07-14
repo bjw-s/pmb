@@ -3,14 +3,14 @@
 #shellcheck disable=SC1091
 test -f "/scripts/umask.sh" && source "/scripts/umask.sh"
 
-printf "Poor Man's Backup\n"
-printf "%-30s\n" " " | tr ' ~' '- '
-printf "%-21s%s\n" "SOURCE DIR:~" "~$PMB__SRC_DIR" | tr ' ~' '  '
-printf "%-21s%s\n" "DESTINATION DIR:~" "~$PMB__DEST_DIR" | tr ' ~' '  '
-printf "%-21s%s\n" "FSFREEZE ENABLED:~" "~$PMB__FSFREEZE" | tr ' ~' '  '
-printf "%-21s%s\n" "COMPRESSION ENABLED:~" "~$PMB__COMPRESSION" | tr ' ~' '  '
-printf "%-21s%s\n" "BACKUPS TO KEEP:~" "~$PMB__KEEP_LATEST" | tr ' ~' '  '
-printf "\n"
+echo "Poor Man's Backup"
+echo "--------------------------------"
+echo "SOURCE DIR:          $PMB__SRC_DIR"
+echo "DESTINATION DIR:     $PMB__DEST_DIR"
+echo "FSFREEZE ENABLED:    $PMB__FSFREEZE"
+echo "COMPRESSION ENABLED: $PMB__COMPRESSION"
+echo "BACKUPS TO KEEP:     $PMB__KEEP_LATEST"
+echo ""
 
 if [[ -z "${PMB__SRC_DIR}" ]]; then
   echo "ERROR You need to set the PMB__SRC_DIR environment variable."
