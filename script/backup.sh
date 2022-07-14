@@ -13,7 +13,7 @@ fi
 
 mkdir -p "${PMB__DEST_DIR}"/{cache,logs,repo}
 
-if [[ ! "$(ls -A "${PMB__DEST_DIR}/repo")" ]]; then
+if [[ -f "${PMB__DEST_DIR}/repo/kopia.repository.f" ]]; then
     kopia repository create filesystem --path="${PMB__DEST_DIR}/repo"
 fi
 
