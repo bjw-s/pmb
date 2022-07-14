@@ -44,9 +44,9 @@ RUN \
   jq \
   util-linux
 
-COPY ./script/backup.sh  /app/backup.sh
-COPY ./script/restore.sh /app/restore.sh
-COPY ./entrypoint.sh     /entrypoint.sh
+COPY --chmod=755 ./script/backup.sh  /app/backup.sh
+COPY --chmod=755 ./script/restore.sh /app/restore.sh
+COPY --chmod=755 ./entrypoint.sh     /entrypoint.sh
 
 COPY --from=kopia      /app/kopia             /usr/local/bin/kopia
 COPY --from=flux-cli   /usr/local/bin/flux    /usr/local/bin/flux
