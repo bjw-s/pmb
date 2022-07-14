@@ -3,47 +3,48 @@
 #shellcheck disable=SC1091
 test -f "/scripts/umask.sh" && source "/scripts/umask.sh"
 
-printf "Poor Man's Backup\n"
-printf "%-18s\n" " " | tr ' ~' '- '
-printf "%-18s%s\n" "MODE:~" "~$PMB__MODE" | tr ' ~' '  '
-printf "%-18s%s\n" "SOURCE DIR:~" "~$PMB__SOURCE_DIR" | tr ' ~' '  '
-printf "%-18s%s\n" "DESTINATION DIR:~" "~$PMB__DESTINATION_DIR" | tr ' ~' '  '
-printf "%-18s%s\n" "RCLONE REMOTE:~" "~$PMB__RCLONE_REMOTE" | tr ' ~' '  '
-printf "%-18s%s\n" "SCHEDULE:~" "~$PMB__CRON_SCHEDULE" | tr ' ~' '  '
-printf "%-18s%s\n" "RETENTION:~" "~$PMB__KEEP_DAYS days" | tr ' ~' '  '
-printf "%-18s%s\n" "EXCLUDE PATTERNS:~" "~$PMB__EXCLUDE_PATTERNS" | tr ' ~' '  '
-printf "%-18s%s\n" "FSFREEZE ENABLED:~" "~$PMB__FSFREEZE" | tr ' ~' '  '
-printf "\n"
+echo "Poor Man's Backup"
+echo "--------------------------------"
+echo "SOURCE DIR:          $PMB__SRC_DIR"
+echo "DESTINATION DIR:     $PMB__DEST_DIR"
+echo "FSFREEZE ENABLED:    $PMB__FSFREEZE"
+echo "COMPRESSION ENABLED: $PMB__COMPRESSION"
+echo "BACKUPS TO KEEP:     $PMB__KEEP_LATEST"
+echo ""
 
-if [[ -z "${PMB__SOURCE_DIR}" ]]; then
-  echo "ERROR You need to set the PMB__SOURCE_DIR environment variable."
+if [[ -z "${PMB__SRC_DIR}" ]]; then
+  echo "ERROR You need to set the PMB__SRC_DIR environment variable."
   exit 1
 fi
 
-if [[ ! -d "${PMB__SOURCE_DIR}" ]]; then
-  echo "ERROR No such source directory: ${PMB__SOURCE_DIR}"
+if [[ ! -d "${PMB__SRC_DIR}" ]]; then
+  echo "ERROR No such source directory: ${PMB__SRC_DIR}"
   exit 1
 fi
 
-if [[ -n "${PMB__DESTINATION_DIR}" ]] && [[ ! -d "${PMB__DESTINATION_DIR}" ]]; then
-  echo "ERROR No such destination directory: ${PMB__DESTINATION_DIR}"
+if [[ -n "${PMB__DEST_DIR}" ]] && [[ ! -d "${PMB__DEST_DIR}" ]]; then
+  echo "ERROR No such destination directory: ${PMB__DEST_DIR}"
   exit 1
 fi
 
-if [[ "${PMB__FSFREEZE}" == "true" ]] && [[ "${EUID}" != "0" ]]; then
+if [[ -z "${KOPIA_PASSWORD}" ]]; then
+  echo "ERROR You need to set the KOPIA_PASSWORD environment variable."
+  exit 1
+fi
+
+if [[ "${PMB__ACTION}" == "backup" && "${PMB__FSFREEZE}" == "true" && "${EUID}" != "0" ]]; then
   echo "ERROR fsfreeze requires the container to be running as root."
   exit 1
 fi
 
-if [[ -n "${PMB__DESTINATION_DIR}" ]]; then
-  rclone config create local_dir alias remote="${PMB__DESTINATION_DIR}" --config "${PMB__RCLONE_CONFIG}"
-fi
-
-if [[ "${PMB__MODE}" == "standalone" ]]; then
-  exec /app/backup.sh
-elif [[ "${PMB__MODE}" == "cron" ]]; then
-  exec /usr/local/bin/go-cron -s "$PMB__CRON_SCHEDULE" -p "$PMB__CRON_HEALTHCHECK_PORT" -- /app/backup.sh
-else
-  echo "ERROR Only the following modes are supported: standalone, cron"
+if [[ "${PMB__ACTION}" == "restore" && -z "${PMB__NAMESPACE}" ]]; then
+  echo "ERROR You need to set the PMB__NAMESPACE environment variable when restoring."
   exit 1
 fi
+
+if [[ "${PMB__ACTION}" == "restore" && -z "${PMB__CONTROLLER_NAME}" ]]; then
+  echo "ERROR You need to set the PMB__CONTROLLER_NAME environment variable when restoring."
+  exit 1
+fi
+
+exec "/app/${PMB__ACTION}.sh"

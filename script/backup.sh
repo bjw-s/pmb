@@ -1,34 +1,50 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-KEEP_DAYS=$((PMB__KEEP_DAYS + 1))
-FILE="$(date "+%Y-%m-%d_%H_%M_%S").tar.gz"
+export KOPIA_LOG_DIR="${PMB__DEST_DIR}/logs"
+export KOPIA_CACHE_DIRECTORY="${PMB__DEST_DIR}/cache"
 
-echo "INFO Backing up ${PMB__SOURCE_DIR} contents to ${FILE}"
-
-excludeArgs=()
-for pattern in ${PMB__EXCLUDE_PATTERNS}; do
-  excludeArgs+=("--exclude=${pattern}")
-done
-
-trap 'catch_exit' EXIT
-
-catch_exit() {
-  if [[ "${PMB__FSFREEZE}" == "true" ]]; then
-    echo "INFO Unfreezing ${PMB__SOURCE_DIR}"
-    fsfreeze --unfreeze "${PMB__SOURCE_DIR}"
-  fi
-}
+echo "INFO Backing up ${PMB__SRC_DIR} contents to ${PMB__DEST_DIR}"
 
 if [[ "${PMB__FSFREEZE}" == "true" ]]; then
-  echo "INFO Freezing ${PMB__SOURCE_DIR}"
-  fsfreeze --freeze "${PMB__SOURCE_DIR}"
+    echo "INFO Freezing ${PMB__SRC_DIR}"
+    fsfreeze --freeze "${PMB__SRC_DIR}"
 fi
 
-tar "${excludeArgs[@]}" -zcf - -C "${PMB__SOURCE_DIR}" . | rclone rcat "${PMB__RCLONE_REMOTE}:${PMB__RCLONE_REMOTE_PATH}${FILE}" --config "${PMB__RCLONE_CONFIG}"
+mkdir -p "${PMB__DEST_DIR}"/{cache,logs,repo}
 
-echo "INFO Cleaning files older than ${PMB__KEEP_DAYS} days..."
-total_backups=$(rclone size "${PMB__RCLONE_REMOTE}:${PMB__RCLONE_REMOTE_PATH}" --config "${PMB__RCLONE_CONFIG}" --json | jq --raw-output '.count')
-if [[ $total_backups -gt ${PMB__KEEP_DAYS} ]]; then
-  rclone delete "${PMB__RCLONE_REMOTE}:${PMB__RCLONE_REMOTE_PATH}" --min-age "${KEEP_DAYS}d" -v --config "${PMB__RCLONE_CONFIG}"
+if [[ ! -f "${PMB__DEST_DIR}/repo/kopia.repository.f" ]]; then
+    kopia repository create filesystem --path="${PMB__DEST_DIR}/repo"
 fi
+
+kopia repository connect filesystem --path="${PMB__DEST_DIR}/repo" --override-hostname=cluster --override-username=cronjob
+
+kopia policy set "${PMB__DEST_DIR}/repo" \
+    --keep-latest "${PMB__KEEP_LATEST}" \
+    --keep-hourly "0" \
+    --keep-daily "0" \
+    --keep-weekly "0" \
+    --keep-monthly "0" \
+    --keep-annual "0"
+
+if [[ "${PMB__COMPRESSION}" == "true" ]]; then
+    kopia policy set "${PMB__DEST_DIR}/repo" --compression=zstd
+fi
+
+kopia snapshot create "${PMB__SRC_DIR}"
+
+if [[ "${PMB__DEBUG}" == "true" ]]; then
+    kopia snapshot list
+    kopia content stats
+fi
+
+kopia repository disconnect
+
+trap catch_exit EXIT
+
+catch_exit() {
+    if [[ "${PMB__FSFREEZE}" == "true" ]]; then
+        echo "INFO Unfreezing ${PMB__SRC_DIR}"
+        fsfreeze --unfreeze "${PMB__SRC_DIR}"
+    fi
+}
