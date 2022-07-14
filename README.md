@@ -16,7 +16,7 @@ This will run a single backup from the local `/tmp/source` directory to a local 
 
 ### Kubernetes
 
-Poor Man's Backup can be used in Kubernetes as well. Examples will follow soon.
+Poor Man's Backup can be used in Kubernetes as well. An example CronJob definition can be found [here](examples/kubernetes/cronjob.yaml).
 
 ## Configuration
 

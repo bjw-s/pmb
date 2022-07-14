@@ -1,0 +1,46 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: my-app-backup
+spec:
+  schedule: "@daily"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: ghcr.io/bjw-s/pmb:rolling
+              imagePullPolicy: Always
+              securityContext:
+                privileged: true
+              env:
+                - name: KOPIA_PASSWORD
+                  value: "my_super_secret_password"
+              volumeMounts:
+                - name: data
+                  mountPath: /data/src
+                - name: backup
+                  mountPath: /data/dest
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: my-app-data
+            - name: backup
+              nfs:
+                server: "my-nfs-server.local"
+                path: "/path/to/backup/destination"
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - my-app
+                  topologyKey: kubernetes.io/hostname
