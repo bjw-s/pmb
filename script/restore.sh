@@ -17,7 +17,9 @@ kubectl -n "${PMB__NAMESPACE}" scale "${PMB__CONTROLLER}" "${PMB__CONTROLLER_NAM
 
 kopia repository connect filesystem --path="${PMB__DEST_DIR}/repo" --override-hostname=cluster --override-username=cronjob
 
-rm -rf "${PMB__SRC_DIR:?}"/{*,.*}
+shopt -s dotglob
+rm -rf "${PMB__SRC_DIR:?}/*"
+shopt -u dotglob
 
 if [[ "${PMB_SNAPSHOT_ID}" == "latest" ]]; then
     latest_snapshot_id=$(kopia snapshot list --json | jq --raw-output '.[0] | .id')
