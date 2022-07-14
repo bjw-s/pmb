@@ -15,7 +15,7 @@ on:
 
 jobs:
   images-build:
-    uses: bjw-s/pmg/.github/workflows/action-image-build.yaml@main
+    uses: bjw-s/pmb/.github/workflows/action-image-build.yaml@main
     with:
       pushImages: "${{ github.event.inputs.push }}"
       version: "${{ github.event.inputs.version }}"

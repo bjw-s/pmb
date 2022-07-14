@@ -13,8 +13,6 @@ on:
 jobs:
   images-build:
     uses: bjw-s/pmb/.github/workflows/action-image-build.yaml@main
-    needs:
-      - get-version
     with:
       pushImages: "true"
       version: "rolling"
