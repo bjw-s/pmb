@@ -1,32 +1,13 @@
 {
   extends: [
-    "config:base",
-    "docker:enableMajor",
-    "docker:pinDigests",
-    ":disableRateLimiting",
-    ":dependencyDashboard",
-    ":semanticCommits",
+    "github>bjw-s/renovate-config",
+    "github>bjw-s/renovate-config:automerge-github-actions",
   ],
   platform: "github",
   username: "bjw-s-bot[bot]",
+  gitAuthor: "bjw-s-bot <87358111+bjw-s-bot[bot]@users.noreply.github.com>",
   repositories: ["bjw-s/pmb"],
-  onboarding: false,
-  requireConfig: false,
-  gitAuthor: "bjw-s-bot <87358111+bjw-s[bot]@users.noreply.github.com>",
-  timezone: "Europe/Amsterdam",
-  dependencyDashboardTitle: "Renovate Dashboard 🤖",
-  suppressNotifications: ["prIgnoreNotification"],
-  commitBodyTable: true,
   packageRules: [
-    {
-      description: "Auto-merge Github Actions",
-      matchDatasources: ["github-tags"],
-      automerge: true,
-      automergeType: "branch",
-      requiredStatusChecks: null,
-      matchUpdateTypes: ["minor", "patch"],
-      matchPackagePatterns: ["renovatebot/github-action"],
-    },
     {
       matchDatasources: ["docker"],
       matchUpdateTypes: ["digest"],
@@ -44,11 +25,11 @@
       versioningTemplate: "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
     },
   ],
-  "packageRules": [
+  packageRules: [
     {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["docker.io/kopia/kopia"],
-      "allowedVersions": "<999"
-    }
-  ]
+      matchDatasources: ["docker"],
+      matchPackageNames: ["docker.io/kopia/kopia"],
+      allowedVersions: "<999",
+    },
+  ],
 }
