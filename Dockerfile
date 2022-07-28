@@ -1,5 +1,5 @@
 FROM ghcr.io/onedr0p/kubernetes-kubectl:1.24.3@sha256:d072e6a445e2339c0a715dec785e953390bea3faf8f0d5e605502b2deb14d8ca as kubectl
-FROM ghcr.io/fluxcd/flux-cli:v0.31.4@sha256:07c0ccd95f08d7465a7bf2958f62c9215ff1270ac718be12dfaea5ec2cbe7648 as flux-cli
+FROM ghcr.io/fluxcd/flux-cli:v0.31.5@sha256:5b7d6fae8417fcad9e8621a75b0dda697a9129f9fb826725af618cc9a7402929 as flux-cli
 FROM docker.io/kopia/kopia:0.11.3@sha256:4b52400182b640f1d0ed4c4a61ef10eba54179fa05d3bb23d3020b4543c914f1 as kopia
 
 FROM alpine:3.16.1@sha256:7580ece7963bfa863801466c0a488f11c86f85d9988051a9f9c68cb27f6b7872
