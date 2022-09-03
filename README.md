@@ -34,11 +34,16 @@ Poor Man's Backup can be used in Kubernetes as well. An example CronJob definiti
 
 #### Backup variables
 
-| Variable         | Description | Default value |
-| ---------------- | ----------- | ------------- |
-| PMB__KEEP_LATEST | Number of backups to keep before removal. | `7` |
-| PMB__COMPRESSION | Enable compression on the backup. | `true` |
-| PMB__FSFREEZE    | Run [`fsfreeze`](https://linux.die.net/man/8/fsfreeze) command on the `PMB__SOURCE_DIR` before performing a backup. **This only works when the container is running privileged and as `root`**. | `true` |
+| Variable          | Description | Default value |
+| ----------------- | ----------- | ------------- |
+| PMB__KEEP_LATEST  | Number of backups to keep before removal. | `7` |
+| PMB__KEEP_HOURLY  | Number of hourly backups to keep | `0` |
+| PMB__KEEP_DAILY   | Number of daily backups to keep | `0` |
+| PMB__KEEP_WEEKLY  | Number of weekly backups to keep | `0` |
+| PMB__KEEP_MONTHLY | Number of monthly backups to keep | `0` |
+| PMB__KEEP_ANNUAL  | Number of annual backups to keep | `0` |
+| PMB__COMPRESSION  | Enable compression on the backup. | `false` |
+| PMB__FSFREEZE     | Run [`fsfreeze`](https://linux.die.net/man/8/fsfreeze) command on the `PMB__SOURCE_DIR` before performing a backup.<br/>**This only works when the container is running privileged and as `root`**. | `true` |
 
 #### Restore variables
 

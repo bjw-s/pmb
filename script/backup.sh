@@ -23,12 +23,12 @@ kopia repository connect filesystem --path="${PMB__DEST_DIR}/repo" --override-ho
 
 printf "\e[1;34m%-6s\e[m\n" "Setting kopia retention policy ..."
 kopia policy set "${PMB__DEST_DIR}/repo" \
-    --keep-latest "${PMB__KEEP_LATEST}" \
-    --keep-hourly "0" \
-    --keep-daily "0" \
-    --keep-weekly "0" \
-    --keep-monthly "0" \
-    --keep-annual "0"
+    --keep-latest "${PMB__KEEP_LATEST:-7}" \
+    --keep-hourly "${PMB__KEEP_HOURLY:-0}" \
+    --keep-daily "${PMB__KEEP_DAILY:-0}" \
+    --keep-weekly "${PMB__KEEP_WEEKLY:-0}" \
+    --keep-monthly "${PMB__KEEP_MONTHLY:-0}" \
+    --keep-annual "${PMB__KEEP_ANNUAL:-0}"
 
 if [[ "${PMB__COMPRESSION}" == "true" ]]; then
     printf "\e[1;34m%-6s\e[m\n" "Setting kopia compression policy ..."
