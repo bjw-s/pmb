@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: MegaLinter
-        uses: oxsecurity/megalinter/flavors/documentation@v6
+        uses: oxsecurity/megalinter/flavors/documentation@v7
         env:
           PRINT_ALPACA: false
           VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'workflow_dispatch' }}
