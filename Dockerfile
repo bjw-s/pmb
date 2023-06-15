@@ -2,7 +2,7 @@ FROM ghcr.io/onedr0p/kubernetes-kubectl:1.25.2@sha256:9d7a9880d59feb6d32c3d29cd5
 FROM ghcr.io/fluxcd/flux-cli:v0.34.0@sha256:5a408b1557fd595baa04cfbad6072854b1420d7bbbd96894a108e433750d2337 as flux-cli
 FROM docker.io/kopia/kopia:0.11.3@sha256:4b52400182b640f1d0ed4c4a61ef10eba54179fa05d3bb23d3020b4543c914f1 as kopia
 
-FROM alpine:3.16.2@sha256:bc41182d7ef5ffc53a40b044e725193bc10142a1243f395ee852a8d9730fc2ad
+FROM alpine:3.18.2@sha256:82d1e9d7ed48a7523bdebc18cf6290bdb97b82302a8a9c27d4fe885949ea94d1
 
 # Global Env
 ENV \
