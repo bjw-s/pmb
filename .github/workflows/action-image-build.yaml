@@ -69,7 +69,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build container image for testing
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           platforms: linux/amd64 # load does not support muti-arch https://github.com/docker/buildx/issues/290
@@ -93,7 +93,7 @@ jobs:
 
       - name: Build all platforms
         id: release
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           labels: |-
             org.opencontainers.image.created="${{ steps.vars.outputs.build_date }}"
